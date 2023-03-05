@@ -7,22 +7,30 @@ const app = express();
 
 app.use(cors());
 
-const port = process.env.NODE_PORT || 5000;
+const port = process.env.NODE_PORT || 3001;
 
 app.get('/', async (req, res) => {
-    const date = req.query.date ? new Date(req.query.date) : new Date(); //Make request either given date or today
-    await fetchMensa('simplesite', { canteens: ['moltke'], dates: [date] })
+    const today = new Date();
+    const date = req.query.date ? req.query.date : 
+        `${today.getFullYear()}-${("0" + (today.getMonth() + 1)).slice(-2)}-${("0" + today.getDate()).slice(-2)}`;
+
+        await fetchMensa('simplesite', { canteens: ['moltke'], dates: [date] })
         .then(data => {
-            console.log(data)
-            res.send(data[0]);
-        });``
+            let weekDay = new Date(date).getDay();
+            if(weekDay == 0 || weekDay == 6) return res.send([]);
+
+            if(data[weekDay - 1]){
+                res.send(data[weekDay - 1]);
+            }else{
+                res.send([])
+            }
+        });
 });
 
 app.get('/koeriStatus', async (req, res) => {
     const date = new Date();
     await fetchMensa('simplesite', { canteens: ['moltke'], dates: [date] })
         .then(data => {
-            console.log(data)
             if (data.length == 0 || data[0].lines[6].meals.length === 0){
                 return res.send(JSON.stringify({"koeriOpen" : false}));
             }
