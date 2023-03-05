@@ -1,6 +1,6 @@
 # mensa-api-server
 
-Simple API server using Node.js and express.js to fetch the current menu of the Mensa Moltke in Karlsruhe
+Very Simple API server using Node.js and express.js to fetch the current menu of the Mensa Moltke in Karlsruhe
 
 ## API Endpoints
 ### 1. `/`
