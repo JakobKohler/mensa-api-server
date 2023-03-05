@@ -7,7 +7,7 @@ const app = express();
 
 app.use(cors());
 
-const port = process.env.PORT || 5000;
+const port = process.env.NODE_PORT || 5000;
 
 app.get('/', async (req, res) => {
     const date = req.query.date ? new Date(req.query.date) : new Date(); //Make request either given date or today
