@@ -31,9 +31,14 @@ app.get('/koeriStatus', async (req, res) => {
     const date = new Date();
     await fetchMensa('simplesite', { canteens: ['moltke'], dates: [date] })
         .then(data => {
-            if (data.length == 0 || data[0].lines[6].meals.length === 0){
-                return res.send(JSON.stringify({"koeriOpen" : false}));
+            let weekDay = date.getDay();
+            if(weekDay == 0 || weekDay == 6 || (data.length == 0)) return res.send(JSON.stringify({"koeriOpen" : false}));
+
+            if(data[weekDay - 1]){
+                let koeriStatus = data[weekDay - 1].lines[6].meals.length === 0 && data[weekDay - 1].lines[2].meals.length === 0;
+                return res.send(JSON.stringify({"koeriOpen" : false}))
             }
+
             res.send(JSON.stringify({"koeriOpen" : true}));
         });
 });
